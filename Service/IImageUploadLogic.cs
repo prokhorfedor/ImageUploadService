@@ -6,7 +6,7 @@ namespace Service;
 
 public interface IImageUploadLogic
 {
-    Task<bool> IsImageLimitExceeded(Guid leadId);
+    Task<bool> IsImageLimitNotExceeded(Guid leadId, int requestFileCount);
     Task<AddLeadImageResponse> UploadImage(AddLeadImageRequest request);
     Task<List<LeadImageModel>> GetLeadImages(Guid leadId);
     Task<DeleteLeadImageResponse> DeleteLeadImage(DeleteLeadImageRequest request);

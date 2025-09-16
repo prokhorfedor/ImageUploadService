@@ -16,12 +16,12 @@ public class ImageUploadLogic : IImageUploadLogic
         _context = context;
     }
 
-    public async Task<bool> IsImageLimitExceeded(Guid leadId)
+    public async Task<bool> IsImageLimitNotExceeded(Guid leadId, int requestFileCount)
     {
         try
         {
             var imageCount = await _context.LeadImages.AsNoTracking().Where(i=>i.LeadId == leadId && !i.IsDeleted).CountAsync();
-            return imageCount < IMAGE_LIMIT;
+            return (imageCount + requestFileCount) <= IMAGE_LIMIT;
         }
         catch (Exception e)
         {
@@ -34,25 +34,29 @@ public class ImageUploadLogic : IImageUploadLogic
     {
         try
         {
-            byte[] image;
-            using (var memoryStream = new MemoryStream())
+            var leadImages = new List<LeadImageModel>();
+            foreach (var file in request.Files)
             {
-                await request.File.CopyToAsync(memoryStream);
-                image = memoryStream.ToArray();
+                byte[] image;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    image = memoryStream.ToArray();
+                }
+                leadImages.Add(new LeadImageModel()
+                {
+                    LeadId = request.LeadId,
+                    Image = image,
+                });
             }
 
-            var leadImage = new LeadImageModel()
-            {
-                LeadId = request.LeadId,
-                Image = image,
-            };
-            await _context.LeadImages.AddAsync(leadImage);
+            await _context.LeadImages.AddRangeAsync(leadImages);
             await _context.SaveChangesAsync();
             return new AddLeadImageResponse()
             {
                 Success = true,
                 LeadId = request.LeadId,
-                ImageId = leadImage.LeadImageId
+                ImageIds = leadImages.Select(i => i.LeadImageId).ToList()
             };
         }
         catch (Exception e)

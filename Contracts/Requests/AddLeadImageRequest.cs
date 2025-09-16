@@ -5,5 +5,5 @@ namespace Contracts.Requests;
 public class AddLeadImageRequest
 {
     public Guid LeadId { get; set; }
-    public IFormFile File { get; set; }
+    public List<IFormFile> Files { get; set; }
 }
