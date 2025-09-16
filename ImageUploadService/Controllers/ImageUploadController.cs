@@ -29,11 +29,17 @@ public class ImageUploadController : ControllerBase
 
     [HttpGet]
     [Route("[action]/{leadId}")]
-    public async Task<ActionResult<List<LeadImageModel>>> GetLeadImages([FromRoute] Guid leadId)
+    public async Task<ActionResult<GetLeadImagesResponse>> GetLeadImages([FromRoute] Guid leadId)
     {
         try
         {
             var result = await _imageUploadLogic.GetLeadImages(leadId);
+            var response = new GetLeadImagesResponse()
+            {
+                LeadId = leadId,
+                Base64Images = new List<string>(),
+            };
+            response.Base64Images.AddRange(result.Select(s => Convert.ToBase64String(s.Image)));
             return Ok(result);
         }
         catch (Exception e)
@@ -52,7 +58,7 @@ public class ImageUploadController : ControllerBase
             if (!validationResult.IsValid)
             {
                 validationResult.AddToModelState(this.ModelState);
-                return BadRequest();
+                return BadRequest(new AddLeadImageResponse() { Success = false, Error = this.ModelState });
             }
             var result = await _imageUploadLogic.UploadImage(request);
             return Ok(result);

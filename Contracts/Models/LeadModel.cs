@@ -8,7 +8,6 @@ namespace Contracts.Models;
 public class LeadModel
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public Guid LeadId { get; set; }
 
     public string FirstName { get; set; }
