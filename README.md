@@ -30,15 +30,18 @@ Here you can see three endpoints created according to your specs.
 
 
 3. Deleting image for lead request/response
+   
    <img width="529" height="472" alt="image" src="https://github.com/user-attachments/assets/5e40a70e-4c22-46da-95ee-b9c4842096be" />
 
 
 **Error Handling**
 
 I have basic error handling for wrong or missing request params, also FileSize limit to 5MB
+
 <img width="600" height="737" alt="image" src="https://github.com/user-attachments/assets/3a4fba41-49cb-4809-ab0f-8e72b916da1e" />
 
 Also I have error handling of limit of images per lead
+
 <img width="674" height="771" alt="image" src="https://github.com/user-attachments/assets/adeb836f-6416-4b6c-b5c3-e92fcadf5018" />
 
    
